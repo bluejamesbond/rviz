@@ -53,6 +53,9 @@ public:
    * @return false on failure, true on success. */
   bool init( int argc, char** argv );
 
+  /** Take screenshot now **/
+  bool takeScreenShotNow(std::string& filename);
+
 private Q_SLOTS:
   /** If ros::ok() is false, close all windows. */
   void checkContinue();

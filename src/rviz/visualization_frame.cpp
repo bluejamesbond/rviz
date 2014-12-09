@@ -365,7 +365,7 @@ void VisualizationFrame::loadPersistentSettings()
       last_config_dir_ = last_config_dir.toStdString();
       last_image_dir_ = last_image_dir.toStdString();
     }
-    
+
     Config recent_configs_list = config.mapGetChild( "Recent Configs" );
     recent_configs_.clear();
     int num_recent = recent_configs_list.listLength();
@@ -617,7 +617,7 @@ void VisualizationFrame::loadDisplayConfig( const QString& qpath )
   std::string actual_load_path = path;
   if( !fs::exists( path ) || fs::is_directory( path ) || fs::is_empty( path ))
   {
-    actual_load_path = (fs::path(package_path_) / "default.rviz").BOOST_FILE_STRING();      
+    actual_load_path = (fs::path(package_path_) / "default.rviz").BOOST_FILE_STRING();
     if( !fs::exists( actual_load_path ))
     {
       ROS_ERROR( "Default display config '%s' not found.  RViz will be very empty at first.", actual_load_path.c_str() );
@@ -746,7 +746,7 @@ void VisualizationFrame::loadWindowGeometry( const Config& config )
       config.mapGetInt( "Height", &height ))
   {
     resize( width, height );
-  }    
+  }
 
   QString main_window_config;
   if( config.mapGetString( "QMainWindow State", &main_window_config ))
@@ -889,7 +889,7 @@ bool VisualizationFrame::prepareToExit()
         default:
           return false;
         }
-        
+
       }
     case QMessageBox::Discard:
       return true;
@@ -986,6 +986,15 @@ void VisualizationFrame::onSaveImage()
   connect( dialog, SIGNAL( savedInDirectory( const QString& )),
            this, SLOT( setImageSaveDirectory( const QString& )));
   dialog->show();
+}
+
+bool VisualizationFrame::takeScreenShotNow(std::string& filename)
+{
+  ScreenshotDialog* dialog = new ScreenshotDialog( this, render_panel_, manager_, QString::fromStdString( last_image_dir_ ));
+  connect( dialog, SIGNAL( savedInDirectory( const QString& )),
+           this, SLOT( setImageSaveDirectory( const QString& )));
+  dialog->takeScreenshotNow();
+  return dialog->saveTo(filename);
 }
 
 void VisualizationFrame::onRecentConfigSelected()

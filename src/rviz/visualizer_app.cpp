@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2008, Willow Garage, Inc.
  * All rights reserved.
  *
@@ -39,7 +39,7 @@
 
 #ifdef Q_OS_MAC
 #include <ApplicationServices/ApplicationServices.h>
-// Apparently OSX #defines 'check' to be an empty string somewhere.  
+// Apparently OSX #defines 'check' to be an empty string somewhere.
 // That was fun to figure out.
 #undef check
 #endif
@@ -276,6 +276,10 @@ VisualizerApp::~VisualizerApp()
 {
   delete continue_timer_;
   delete frame_;
+}
+
+bool VisualizerApp::takeScreenShotNow(std::string& filename){
+  return frame_->takeScreenShotNow(filename);
 }
 
 void VisualizerApp::startContinueChecker()

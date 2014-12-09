@@ -31,11 +31,46 @@
 
 #include "rviz/visualizer_app.h"
 
+#include <sys/types.h>
+#include <signal.h>
+#include <unistd.h>
+
+#define SCREENSHOT_SIGNAL 10
+#define SCREENSHOT_OUTPUT_PATH "/home/mkurian/Desktop/rviz/"
+
+rviz::VisualizerApp *appHandle = NULL;
+
+void signal_callback_handler(int signum)
+{
+   if(signum == SCREENSHOT_SIGNAL){
+      if(appHandle != NULL){
+        time_t rawtime;
+        struct tm * timeinfo;
+        char buffer[80];
+
+        time (&rawtime);
+        timeinfo = localtime(&rawtime);
+
+        strftime(buffer,80,"%d-%m-%Y %I:%M:%S",timeinfo);
+        std::string currtime(buffer);
+
+        std::string filename = SCREENSHOT_OUTPUT_PATH + currtime + ".png";
+        if(!appHandle->takeScreenShotNow(filename)){
+          printf("%s\n", "Failed to take screenshot!");
+        }
+      }
+   }
+}
+
 int main( int argc, char** argv )
 {
-  QApplication qapp( argc, argv );
+  // Register signal and signal handler
+  signal(SCREENSHOT_SIGNAL, signal_callback_handler);
 
+  QApplication qapp( argc, argv );
   rviz::VisualizerApp vapp;
+  appHandle = &vapp;
+
   if( vapp.init( argc, argv ))
   {
     return qapp.exec();
