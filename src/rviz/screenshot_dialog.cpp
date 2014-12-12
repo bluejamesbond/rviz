@@ -114,12 +114,10 @@ void ScreenshotDialog::onTimeout()
   activateWindow();
 }
 
-#define QT_RAISE_DELAY_MS 800
 void ScreenshotDialog::takeScreenshotNow()
 {
   main_window_->raise();
   main_window_->activateWindow();
-  usleep(QT_RAISE_DELAY_MS * 1000);
   screenshot_ = QPixmap::grabWindow( render_window_->winId() );
 }
 
@@ -137,39 +135,6 @@ void ScreenshotDialog::onButtonClicked( QAbstractButton* clicked )
   {
     close();
   }
-}
-
-bool ScreenshotDialog::saveTo(std::string& filename_str)
-{
-  QString filename = QString::fromStdString(filename_str);
-  if( filename != "" )
-  {
-    QString with_slashes = QDir::fromNativeSeparators( filename );
-    QString file_part = with_slashes.section( '/', -1 );
-    default_save_dir_ = QDir::toNativeSeparators( with_slashes.section( '/', 0, -2 ));
-
-    // If filename has no dot, like "image" or has a dot in the zeroth
-    // position, like ".image", add ".png" to give a default file
-    // format.
-    if( file_part.lastIndexOf( "." ) <= 0 )
-    {
-      filename += ".png";
-    }
-
-    QImageWriter writer( filename );
-
-    if( writer.write( screenshot_.toImage() ))
-    {
-      close();
-      return true;
-    }
-    else
-    {
-      return false;
-    }
-  }
-
-  return false;
 }
 
 void ScreenshotDialog::save()

@@ -64,11 +64,9 @@ Q_SIGNALS:
   /** @brief Emitted when the user saves a file. */
   void savedInDirectory( const QString& directory );
 
-public Q_SLOTS:
-  void takeScreenshotNow();
-  bool saveTo(std::string& filename_str);
 protected Q_SLOTS:
   void save();
+  void takeScreenshotNow();
   void takeScreenshot();
   void onTimeout();
   void onButtonClicked( QAbstractButton* clicked );

@@ -151,6 +151,8 @@ VisualizationFrame::VisualizationFrame( QWidget* parent )
   statusBar()->addPermanentWidget( fps_label_, 0 );
 
   setWindowTitle( "RViz[*]" );
+
+  connect(this, SIGNAL( requestScreenShot(QString*)), this, SLOT( takeScreenShotNow(QString*)));
 }
 
 VisualizationFrame::~VisualizationFrame()
@@ -988,13 +990,16 @@ void VisualizationFrame::onSaveImage()
   dialog->show();
 }
 
-bool VisualizationFrame::takeScreenShotNow(std::string& filename)
+void VisualizationFrame::takeScreenShotNow(QString* filename)
 {
-  ScreenshotDialog* dialog = new ScreenshotDialog( this, render_panel_, manager_, QString::fromStdString( last_image_dir_ ));
-  connect( dialog, SIGNAL( savedInDirectory( const QString& )),
-           this, SLOT( setImageSaveDirectory( const QString& )));
-  dialog->takeScreenshotNow();
-  return dialog->saveTo(filename);
+  QPixmap screenshot_ = QPixmap::grabWindow( render_panel_->winId() );
+  screenshot_.save(*filename);
+  screenshot_ = NULL;
+}
+
+void VisualizationFrame::invokeScreenShot(std::string& filename_str){
+  QString filename = QString::fromStdString(filename_str);
+  Q_EMIT requestScreenShot(&filename);
 }
 
 void VisualizationFrame::onRecentConfigSelected()

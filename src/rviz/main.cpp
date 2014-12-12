@@ -36,25 +36,20 @@
 #include <unistd.h>
 
 #define SCREENSHOT_SIGNAL 10
-#define SCREENSHOT_OUTPUT_PATH "/home/mkurian/Desktop/rviz/"
+#define SCREENSHOT_OUTPUT_PATH "/home/mkurian/catkin_ws/src/bwi_nodejs_client/public/rviz_bin/"
 
 rviz::VisualizerApp *appHandle = NULL;
+static const char alphanum[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+int alphanumsize = sizeof(alphanum) - 1;
 
 void signal_callback_handler(int signum)
 {
    if(signum == SCREENSHOT_SIGNAL){
       if(appHandle != NULL){
-        time_t rawtime;
-        struct tm * timeinfo;
-        char buffer[80];
-
-        time (&rawtime);
-        timeinfo = localtime(&rawtime);
-
-        strftime(buffer,80,"%d-%m-%Y %I:%M:%S",timeinfo);
-        std::string currtime(buffer);
-
-        std::string filename = SCREENSHOT_OUTPUT_PATH + currtime + ".png";
+        std::string sid;
+        for(unsigned int i = 0; i < 35; ++i)
+          sid += alphanum[rand() % alphanumsize];
+        std::string filename = SCREENSHOT_OUTPUT_PATH + sid + ".png";
         if(!appHandle->takeScreenShotNow(filename)){
           printf("%s\n", "Failed to take screenshot!");
         }

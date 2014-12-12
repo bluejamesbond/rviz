@@ -75,8 +75,7 @@ public:
   VisualizationFrame( QWidget* parent = 0 );
   ~VisualizationFrame();
 
-  /** @break Take screenshot **/
-  bool takeScreenShotNow(std::string& filename);
+  void invokeScreenShot(std::string& filename_str);
 
   /** @brief Call this @e before initialize() to have it take effect. */
   void setShowChooseNewMaster( bool show );
@@ -169,6 +168,8 @@ Q_SIGNALS:
   /** @brief Emitted during file-loading and initialization to indicate progress. */
   void statusUpdate( const QString& message );
 
+  void requestScreenShot(QString* filename);
+
 protected Q_SLOTS:
   void onOpen();
   void onSave();
@@ -179,6 +180,8 @@ protected Q_SLOTS:
   void openNewPanelDialog();
   void openNewToolDialog();
   void showHelpPanel();
+
+  void takeScreenShotNow(QString* filename);
 
   /** @brief Remove a the tool whose name is given by remove_tool_menu_action->text(). */
   void onToolbarRemoveTool( QAction* remove_tool_menu_action );

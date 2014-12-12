@@ -279,7 +279,9 @@ VisualizerApp::~VisualizerApp()
 }
 
 bool VisualizerApp::takeScreenShotNow(std::string& filename){
-  return frame_->takeScreenShotNow(filename);
+  frame_->invokeScreenShot(filename);
+  // unable to give respones due to qt SIGNAL / SLOT
+  return true;
 }
 
 void VisualizerApp::startContinueChecker()
